@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pill Reminder Alarm</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #f0f8ff;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    .reminder-time {
+      font-size: 1.5rem;
+      margin: 20px 0;
+      color: #27ae60;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 1.2rem;
+      color: #34495e;
+    }
+  </style>
+</head>
+<body>
+  <h1>💊 Goli Reminder Alarm</h1>
+  <div id="status">Waiting for the next alarm...</div>
+
+  <!-- Alarm sound -->
+  <audio id="alarm-sound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg" preload="auto"></audio>
+
+  <script>
+    // Request permission for notifications
+    if ('Notification' in window && Notification.permission !== 'granted') {
+      Notification.requestPermission();
+    }
+
+    const reminders = [
+      { time: "08:00", message: "Time to take your morning pill, Ajo!" },
+      { time: "10:30", message: " Take your pill Ajo!" },
+      { time: "14:00", message: "lay zhala jevan aata goli ghya!" }
+    ];
+
+    function checkReminder() {
+      const now = new Date();
+      const currentTime = now.toTimeString().slice(0,5); // "HH:MM"
+
+      reminders.forEach(reminder => {
+        if (currentTime === reminder.time) {
+          triggerAlarm(reminder.message);
+          document.getElementById("status").innerText = reminder.message;
+        }
+      });
+    }
+
+    function triggerAlarm(message) {
+      const alarm = document.getElementById('alarm-sound');
+      alarm.play();
+
+      if (Notification.permission === "granted") {
+        new Notification("💊 Pill Reminder", { body: message });
+      }
+    }
+
+    // Check every 30 seconds
+    setInterval(checkReminder, 30000);
+  </script>
+</body>
+</html>
